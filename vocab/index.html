@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>韓文核心單字極速刷 - 韓系復古類比版</title>
+    <style>
+        :root {
+            /* 韓系復古類比色調 (Seoul Retro-Analog) */
+            --bg-color: #F4F6F9;         /* 帶冷調的乾淨潮感灰白底 */
+            --card-front: #FFFFFF;
+            --card-back: #F8FAFC;        /* 修正：背面改為舒適溫和的極淺灰白 */
+            
+            --text-color: #0F172A;       /* 極深藍黑 */
+            --text-muted: #64748B;       /* 內斂冷灰 */
+            --border-color: #CBD5E1;     /* 幾何線條灰 */
+            
+            /* 主色與輔色精準調配 */
+            --primary-blue: #1E40AF;     /* 核心首爾深藍 */
+            --trend-yellow: #FACC15;     /* 復古潮流高亮黃 */
+            --highlight-yellow-bg: #FEF08A; /* 柔和的黃色螢光筆底色 */
+            
+            /* 按鈕客製化潮流色 */
+            --btn-learned-bg: #1E40AF;   /* 深藍 */
+            --btn-keep-bg: #FFFFFF;       /* 純白 */
+            --btn-keep-text: #0F172A;
+            --btn-fav-bg: #FACC15;      /* 潮流黃 */
+            --btn-fav-text: #0F172A;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Malgun Gothic", sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: var(--text-color);
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* 頂部控制區 */
+        .top-bar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 380px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: #E2E8F0;
+            padding: 4px;
+            border-radius: 12px;
+            width: 100%;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: transparent;
+            color: var(--text-muted);
+            border: none;
+            padding: 12px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: var(--primary-blue);
+            color: white;
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.2);
+        }
+
+        /* 搜尋框 */
+        .search-box {
+            width: 100%;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            box-sizing: border-box;
+            font-size: 14px;
+            font-weight: 600;
+            outline: none;
+            background: white;
+            color: var(--text-color);
+            transition: all 0.2s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.15);
+        }
+
+        .search-results {
+            position: absolute;
+            top: 55px;
+            left: 0;
+            width: 100%;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(15,23,42,0.1);
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+            border: 2px solid var(--primary-blue);
+        }
+
+        .search-item {
+            padding: 14px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid #F1F5F9;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .search-item:hover {
+            background: rgba(30, 64, 175, 0.05);
+        }
+
+        .progress {
+            font-size: 13px;
+            color: var(--primary-blue);
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            font-weight: 800;
+            background: rgba(30, 64, 175, 0.1);
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        .view-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 舞台區：完美置中 */
+        .stage-area {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            height: 320px;
+        }
+
+        /* 懸浮返回按鈕 */
+        .side-prev-btn {
+            background: white;
+            border: 2px solid var(--text-color);
+            color: var(--text-color);
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            left: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 4px 4px 0px var(--text-color);
+            transition: all 0.1s ease;
+            user-select: none;
+            z-index: 20;
+        }
+
+        .side-prev-btn:hover {
+            background: var(--trend-yellow);
+            transform: translateY(-50%) translate(-2px, -2px);
+            box-shadow: 6px 6px 0px var(--text-color);
+        }
+
+        .side-prev-btn:active {
+            transform: translateY(-50%) translate(2px, 2px);
+            box-shadow: 0px 0px 0px var(--text-color);
+        }
+
+        /* 卡片容器 */
+        .card-container {
+            width: 380px;
+            height: 300px;
+            perspective: 1000px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .card-tools {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            z-index: 10;
+        }
+
+        .tool-btn {
+            background: white;
+            border: 2px solid var(--text-color);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            box-shadow: 2px 2px 0px var(--text-color);
+            transition: all 0.1s;
+        }
+        
+        .tool-btn:hover {
+            background: var(--trend-yellow);
+            transform: translate(-1px, -1px);
+            box-shadow: 3px 3px 0px var(--text-color);
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 15px 35px rgba(15, 23, 42, 0.08);
+            border-radius: 24px;
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-sizing: border-box;
+            padding: 32px 24px;
+            text-align: center;
+            border: 2px solid var(--text-color);
+        }
+
+        /* 正面 UI */
+        .card-front {
+            background-color: var(--card-front);
+            justify-content: space-between;
+        }
+
+        .korean {
+            font-size: 56px;
+            font-weight: 800;
+            color: var(--primary-blue);
+            margin-top: auto;
+            margin-bottom: auto;
+            letter-spacing: -1px;
+        }
+
+        /* 正面例句：深藍底白字，極具潮流畫報感 */
+        .front-example {
+            background: var(--primary-blue);
+            padding: 12px 18px;
+            border-radius: 14px;
+            width: 90%;
+            box-sizing: border-box;
+            font-size: 14px;     
+            font-weight: 600;
+            color: #FFFFFF;
+            line-height: 1.5;
+            margin-top: auto;
+            letter-spacing: 0.3px;
+        }
+
+        /* 反面 UI */
+        .card-back {
+            background-color: rgba(30, 64, 175, 0.96);
+            transform: rotateY(180deg);
+            justify-content: space-between;
+	    border-color: var(--primary-blue);
+        }
+
+        .chinese {
+            font-size: 34px;
+            font-weight: 800;
+            color: #E2E8F0;
+            margin-top: auto;
+            margin-bottom: auto;
+            letter-spacing: 0.5px;
+        }
+
+        /* 反面例句盒：淺底下的點睛黃色 */
+        .back-example-box {
+            background: rgba(255, 255, 255, 0.08); /* 半透明高街黑 */
+            padding: 14px 18px;
+            border-radius: 14px;
+            width: 90%;
+            box-sizing: border-box;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            margin-top: auto;
+        }
+
+        .back-example-kr {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--trend-yellow); /* 潮流黃點綴例句 */
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+
+        .back-example-ch {
+            font-size: 13px;
+            color: #E2E8F0;
+            font-weight: 500;
+        }
+
+        /* 控制按鈕區 */
+        .controls {
+            margin-top: 30px;
+            display: flex;
+            gap: 14px;
+            width: 380px;
+            justify-content: space-between;
+        }
+
+        .action-btn {
+            flex: 1;
+            border: 2px solid var(--text-color);
+            padding: 15px 0;
+            font-size: 14px;
+            font-weight: 800;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            text-align: center;
+        }
+
+        /* 按鈕街頭硬陰影 */
+        .btn-success { 
+            background-color: var(--btn-learned-bg); 
+            color: white;
+            box-shadow: 3px 3px 0px var(--text-color);
+        }
+        .btn-warning { 
+            background-color: var(--btn-keep-bg); 
+            color: var(--btn-keep-text);
+            box-shadow: 3px 3px 0px var(--text-color);
+        }
+        .btn-favorite { 
+            background-color: var(--btn-fav-bg); /* 修正：純白底 */
+            color: var(--btn-fav-text);
+            box-shadow: 3px 3px 0px var(--text-color);
+        }
+
+        .action-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0px var(--text-color);
+        }
+
+        .action-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px var(--text-color);
+        }
+
+        /* 收藏庫 */
+        .fav-list-view {
+            width: 380px;
+            max-height: 480px;
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+            border: 2px solid var(--text-color);
+	 
+    	    /* 防止內容物與滾動條刺穿 20px 的外框圓角 */
+    	    overflow: hidden; 
+    	    display: none !important; 
+            box-sizing: border-box;
+        }
+
+	/* 當 JS 把 display 改為 'block' 來顯示它時，靠這個特殊選擇器強行扭轉成 flex */
+        .fav-list-view[style*="display: block"] {
+            display: flex !important;
+            flex-direction: column;
+        }
+
+	/* 讓標題固定，只有內容區段滾動 */
+	    .fav-list-view h3 {
+    	    margin-top: 0;
+    	    margin-bottom: 16px;
+   	    flex-shrink: 0;
+	}
+
+	/* 獨立出內容滾動區 */
+	#fav-list-content {
+   	 overflow-y: auto;
+    	flex-grow: 1;
+    	padding-right: 20px; /* 給滾動條一點呼吸空間 */
+    
+    	/* 針對 Firefox 的極細滾動條設定 */
+    	scrollbar-width: thin;
+    	scrollbar-color: var(--primary-blue) transparent;
+	}
+
+	/* 針對 Chrome, Safari, Webkit 行動端瀏覽器的滾動條高街客製化 */
+	#fav-list-content::-webkit-scrollbar {
+ 	   width: 5px; /* 極細，不佔空間 */
+	}
+
+	#fav-list-content::-webkit-scrollbar-track {
+ 	   background: transparent; /* 軌道透明，保持乾淨 */
+	}
+
+	#fav-list-content::-webkit-scrollbar-thumb {
+ 	   background-color: var(--primary-blue); /* 使用我們帥氣的首爾深藍 */
+  	  border-radius: 10px; /* 滾動條本身也要俐落圓角 */
+	}
+
+        .fav-item {
+            display: flex;
+            flex-direction: column;
+            padding: 18px 0;
+            border-bottom: 2px dashed #E2E8F0;
+            text-align: left;
+        }
+
+        .fav-item:last-child { border-bottom: none; }
+        .fav-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .fav-kr { font-size: 22px; font-weight: 800; color: var(--primary-blue); }
+        .fav-ch { font-size: 15px; font-weight: 700; color: var(--text-muted); }
+        
+        /* 收藏庫例句盒：採用與卡片背面呼應的質感配置 */
+        .fav-example-box {
+            margin-top: 12px;
+            background: rgba(30, 64, 175, 0.08); 
+            padding: 12px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            border: 1px solid var(--border-color);
+        }
+        .fav-ex-kr { 
+            font-weight: 700; 
+            color: var(--text-color); 
+            padding: 2px 4px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 6px; 
+        }
+        .fav-ex-ch { 
+            color: var(--text-muted); /* 修正：中文改回沉穩灰色，不搶眼，專注於韓文 */
+            font-weight: 500; 
+        }
+
+        .fav-actions { display: flex; gap: 8px; }
+        .empty-msg { color: var(--text-muted); text-align: center; padding: 30px; font-size: 14px; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <div class="nav-tabs">
+            <button class="tab-btn active" id="tab-flashcard" onclick="switchView('flashcard')">CARD MODE</button>
+            <button class="tab-btn" id="tab-favorites" onclick="switchView('favorites')">MY VAULT (<span id="fav-count">0</span>)</button>
+        </div>
+
+        <div class="search-box">
+            <input type="text" id="search-input" placeholder="🔍 搜尋韓文單字或中文翻譯..." oninput="handleSearch()">
+            <div class="search-results" id="search-results"></div>
+        </div>
+    </div>
+
+    <!-- 單字卡模式 -->
+    <div id="flashcard-view" class="view-container">
+        <div class="progress" id="progress">載入中...</div>
+
+        <!-- 舞台區 -->
+        <div class="stage-area">
+            <button class="side-prev-btn" onclick="handlePrev(event)" title="返回上一張">‹</button>
+            
+            <div class="card-container">
+                <div class="card-tools">
+                    <button class="tool-btn" onclick="speakCurrentWord(event)" title="播放發音">🔊</button>
+                </div>
+                
+                <div class="card" id="card" onclick="flipCard()">
+                    <!-- 正面 -->
+                    <div class="card-face card-front">
+                        <div class="korean" id="word-kr">-</div>
+                        <div class="front-example" id="ex-kr">-</div>
+                    </div>
+                    <!-- 反面 -->
+                    <div class="card-face card-back">
+                        <div class="chinese" id="word-ch">-</div>
+                        <div class="back-example-box">
+                            <span class="back-example-kr" id="ex-back-kr">-</span>
+                            <div class="back-example-ch" id="ex-back-ch">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 控制按鈕 -->
+        <div class="controls">
+            <button class="action-btn btn-success" onclick="handleAction('learned', event)">這字我熟</button>
+            <button class="action-btn btn-warning" onclick="handleAction('keep', event)">再看一次</button>
+            <button class="action-btn btn-favorite" onclick="handleAction('favorite', event)">加入收藏</button>
+        </div>
+    </div>
+
+    <!-- 收藏庫模式 -->
+    <div id="favorites-view" class="fav-list-view">
+        <h3 style="margin-top:0; color:var(--text-color); font-size:18px; font-weight:800; letter-spacing:0.5px;">SAVED WORDS</h3>
+        <div id="fav-list-content"></div>
+    </div>
+
+    <script>
+        // 核心字庫維持原樣
+        const rawWords = [
+            { kr: "사람", ch: "人", exKr: "좋은 사람을 만났어요.", exCh: "遇見了很好的人。" },
+            { kr: "우리", ch: "我們", exKr: "우리는 친구예요.", exCh: "我們是朋友。" },
+            { kr: "집", ch: "家、房子", exKr: "지금 집에 가요.", exCh: "現在回家。" },
+            { kr: "오늘", ch: "今天", exKr: "오늘 날씨가 좋네요.", exCh: "今天天氣真好。" },
+            { kr: "어디", ch: "哪裡", exKr: "지금 어디에 있어요?", exCh: "現在在哪裡？" },
+            { kr: "맛있다", ch: "好吃", exKr: "이 비빔밥은 진짜 맛있어요.", exCh: "這碗石鍋拌飯真的很好吃。" },
+            { kr: "안녕하세요", ch: "你好", exKr: "안녕하세요, 처음 뵙겠습니다.", exCh: "你好，初次見面。" },
+            { kr: "감사합니다", ch: "謝謝", exKr: "도와주셔서 감사합니다.", exCh: "謝謝你的幫忙。" },
+            { kr: "친구", ch: "朋友", exKr: "한국인 친구가 있어요.", exCh: "我有韓國朋友。" },
+            { kr: "돈", ch: "錢", exKr: "지금 돈이 없어요.", exCh: "現在沒有錢。" },
+            { kr: "하다", ch: "做", exKr: "매일 한국어 공부를 해요.", exCh: "每天都讀韓文。" },
+            { kr: "가다", ch: "去", exKr: "학교에 다녀오겠습니다.", exCh: "我去上學了。" },
+            { kr: "보다", ch: "看", exKr: "주말에 영화를 봐요.", exCh: "週末看電影。" },
+            { kr: "먹다", ch: "吃", exKr: "한국 음식을 좋아해요.", exCh: "我喜歡吃韓國料理。" },
+            { kr: "좋다", ch: "好、喜歡", exKr: "이 노래가 정말 좋아요.", exCh: "這首歌真的很好。" }
+        ];
+
+        let activeWords = [...rawWords];
+        let currentIndex = 0;
+        let favorites = JSON.parse(localStorage.getItem('kr_favorites_v9')) || [];
+        let actionHistory = []; 
+
+        const card = document.getElementById('card');
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function updateCard() {
+            if (activeWords.length === 0) {
+                document.getElementById('word-kr').innerText = "🎉";
+                document.getElementById('ex-kr').innerText = "太棒了！所有單字都學會了！";
+                document.getElementById('word-ch').innerText = "請重新整理網頁再挑戰一遍！";
+                document.getElementById('ex-back-kr').innerText = "";
+                document.getElementById('ex-back-ch').innerText = "";
+                document.getElementById('progress').innerText = "SUCCESS 100%";
+                return;
+            }
+
+            card.classList.remove('flipped');
+            
+            setTimeout(() => {
+                const currentWord = activeWords[currentIndex];
+                document.getElementById('word-kr').innerText = currentWord.kr;
+                document.getElementById('ex-kr').innerText = currentWord.exKr;
+                document.getElementById('word-ch').innerText = currentWord.ch;
+                document.getElementById('ex-back-kr').innerText = currentWord.exKr;
+                document.getElementById('ex-back-ch').innerText = currentWord.exCh;
+                
+                document.getElementById('progress').innerText = `LEFT: ${activeWords.length} / CURRENT: ${currentIndex + 1}`;
+                
+                speakWordAndExample(currentWord.kr, currentWord.exKr);
+            }, card.classList.contains('flipped') ? 200 : 0);
+        }
+
+        function flipCard() {
+            if (activeWords.length === 0) return;
+            card.classList.toggle('flipped');
+        }
+
+        function handleAction(actionType, event) {
+            if (event) event.stopPropagation();
+            if (activeWords.length === 0) return;
+
+            const currentWord = activeWords[currentIndex];
+
+            actionHistory.push({
+                word: currentWord,
+                action: actionType,
+                indexInActive: currentIndex
+            });
+
+            if (actionType === 'learned') {
+                activeWords.splice(currentIndex, 1);
+                if (currentIndex >= activeWords.length) currentIndex = 0;
+            } else if (actionType === 'keep') {
+                currentIndex = (currentIndex + 1) % activeWords.length;
+            } else if (actionType === 'favorite') {
+                if (!favorites.some(f => f.kr === currentWord.kr)) {
+                    favorites.push(currentWord);
+                    localStorage.setItem('kr_favorites_v9', JSON.stringify(favorites));
+                    renderFavorites();
+                }
+                currentIndex = (currentIndex + 1) % activeWords.length;
+            }
+            updateCard();
+        }
+
+        function handlePrev(event) {
+            if (event) event.stopPropagation();
+            if (actionHistory.length === 0) return; 
+
+            const lastState = actionHistory.pop(); 
+
+            if (lastState.action === 'learned') {
+                activeWords.splice(lastState.indexInActive, 0, lastState.word);
+                currentIndex = lastState.indexInActive;
+            } else if (lastState.action === 'keep' || lastState.action === 'favorite') {
+                currentIndex = lastState.indexInActive;
+            }
+
+            updateCard();
+        }
+
+        function speakWordAndExample(word, example) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+
+                const wordUtterance = new SpeechSynthesisUtterance(word);
+                wordUtterance.lang = 'ko-KR';
+                wordUtterance.rate = 0.85;
+
+                const exUtterance = new SpeechSynthesisUtterance(example);
+                exUtterance.lang = 'ko-KR';
+                exUtterance.rate = 0.85;
+
+                wordUtterance.onend = function() {
+                    window.speechSynthesis.speak(exUtterance);
+                };
+
+                window.speechSynthesis.speak(wordUtterance);
+            }
+        }
+
+        function speakCurrentWord(event) {
+            event.stopPropagation();
+            if (activeWords.length > 0) {
+                speakWordAndExample(activeWords[currentIndex].kr, activeWords[currentIndex].exKr);
+            }
+        }
+
+        function removeFavorite(krWord) {
+            favorites = favorites.filter(f => f.kr !== krWord);
+            localStorage.setItem('kr_favorites_v9', JSON.stringify(favorites));
+            renderFavorites();
+        }
+
+        function renderFavorites() {
+            document.getElementById('fav-count').innerText = favorites.length;
+            const content = document.getElementById('fav-list-content');
+            
+            if (favorites.length === 0) {
+                content.innerHTML = '<div class="empty-msg">EMPTY VAULT</div>';
+                return;
+            }
+
+            let html = '';
+            favorites.forEach(f => {
+                html += `
+                    <div class="fav-item">
+                        <div class="fav-top">
+                            <div class="fav-kr">${f.kr} <span class="fav-ch">${f.ch}</span></div>
+                            <div class="fav-actions">
+                                <button class="tool-btn" style="width:32px; height:32px; font-size:14px;" onclick="speakWordAndExample('${f.kr}', '${f.exKr}')">🔊</button>
+                                <button class="tool-btn" style="width:32px; height:32px; font-size:14px;" onclick="removeFavorite('${f.kr}')">❌</button>
+                            </div>
+                        </div>
+                        <div class="fav-example-box">
+                            <div><span class="fav-ex-kr">${f.exKr}</span></div>
+                            <div class="fav-ex-ch">${f.exCh}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            content.innerHTML = html;
+        }
+
+        function handleSearch() {
+            const query = document.getElementById('search-input').value.trim().toLowerCase();
+            const resultsDiv = document.getElementById('search-results');
+            
+            if (!query) {
+                resultsDiv.style.display = 'none';
+                return;
+            }
+
+            const filtered = rawWords.filter(w => w.kr.toLowerCase().includes(query) || w.ch.toLowerCase().includes(query));
+            
+            if (filtered.length === 0) {
+                resultsDiv.innerHTML = '<div class="search-item" style="color:#999;">NOT FOUND</div>';
+            } else {
+                let html = '';
+                filtered.forEach(w => {
+                    html += `<div class="search-item" onclick="selectSearchItem('${w.kr}')"><strong>${w.kr}</strong> - ${w.ch}</div>`;
+                });
+                resultsDiv.innerHTML = html;
+            }
+            resultsDiv.style.display = 'block';
+        }
+
+        function selectSearchItem(krWord) {
+            document.getElementById('search-results').style.display = 'none';
+            document.getElementById('search-input').value = '';
+            switchView('flashcard');
+
+            let index = activeWords.findIndex(w => w.kr === krWord);
+            if (index === -1) {
+                const wordToAdd = rawWords.find(w => w.kr === krWord);
+                activeWords.push(wordToAdd);
+                index = activeWords.length - 1;
+            }
+
+            currentIndex = index;
+            updateCard();
+        }
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.search-box')) {
+                document.getElementById('search-results').style.display = 'none';
+            }
+        });
+
+        function switchView(view) {
+            const flashTab = document.getElementById('tab-flashcard');
+            const favTab = document.getElementById('tab-favorites');
+            const flashView = document.getElementById('flashcard-view');
+            const favView = document.getElementById('favorites-view');
+
+            if (view === 'flashcard') {
+                flashTab.classList.add('active');
+                favTab.classList.remove('active');
+                flashView.style.display = 'flex';
+                favView.style.display = 'none';
+            } else {
+                flashTab.classList.remove('active');
+                favTab.classList.add('active');
+                flashView.style.display = 'none';
+                favView.style.display = 'block';
+                renderFavorites();
+            }
+        }
+
+        // 初始化
+        shuffle(activeWords);
+        renderFavorites();
+        updateCard();
+    </script>
+</body>
+</html>
